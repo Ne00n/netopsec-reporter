@@ -3,7 +3,7 @@ import json, os, urllib.request, urllib.error
 
 src = "/var/lib/pmacct/ports.json"
 endpoint = "https://report.opsec.wang"
-token = os.environ.get("REPORT_TOKEN", "changeme")
+token = os.environ.get("netopsec_token", "changeTokenHere")
 
 with open(src) as f:
     for line in f:
