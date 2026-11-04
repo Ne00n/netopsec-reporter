@@ -8,7 +8,7 @@ wget https://raw.githubusercontent.com/Ne00n/netopsec-reporter/refs/heads/master
 echo "3e85e5ca687eaaae7f865e107d53a8b5bd62d9f427af95693823f23fed84988c  pmacctd.conf" | sha256sum -c --status - || { echo "Checksum mismatch, aborting." >&2; exit 1; }
 cd /usr/local/bin/
 wget https://raw.githubusercontent.com/Ne00n/netopsec-reporter/refs/heads/master/netopsec.py
-echo "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  netopsec.py" | sha256sum -c --status - || { echo "Checksum mismatch, aborting." >&2; exit 1; }
+echo "f36908a0186c9afcf3f2a74ab64ba139bb8231a9cb96aaf9d4761200d1c9324b  netopsec.py" | sha256sum -c --status - || { echo "Checksum mismatch, aborting." >&2; exit 1; }
 chmod +x netopsec.py
 systemctl restart pmacctd
 cd
