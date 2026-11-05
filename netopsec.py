@@ -6,7 +6,7 @@ endpoint = "https://report.opsec.wang"
 token = os.environ.get("netopsec_token", "changeTokenHere")
 
 out = subprocess.run(["ss", "-tulnpH"], capture_output=True, text=True).stdout
-monitorPorts = [21,22,23,25,80,443,445,1433,2323,2375,3306,3389,5060,5432,5900,6379,8080,8443,9200,27017]
+monitorPorts = [21,22,23,25,80,161,443,445,1433,2323,2375,3306,3389,5060,5432,5900,6379,8080,8443,9200,27017]
 usedPorts = []
 for line in out.splitlines():
     f = line.split()
@@ -17,8 +17,7 @@ alreadySend = []
 with open(src) as f:
     for line in f:
         line = line.strip()
-        if not line:
-            continue
+        if not line: continue
         try:
             line = json.loads(line)
             if line['ip_src'] in alreadySend: continue
