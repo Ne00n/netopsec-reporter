@@ -22,7 +22,6 @@ with open(src) as f:
             line = json.loads(line)
             if line['ip_src'] in alreadySend: continue
             if line['port_dst'] in usedPorts: continue
-            if line['ip_proto'] == "icmp" or line['ip_proto'] == "ipv6-icmp": continue
             req = urllib.request.Request(endpoint,data=json.dumps(line).encode(),
             headers={"Content-Type": "application/json","Authorization": f"Bearer {token}"},method="POST",)
             urllib.request.urlopen(req, timeout=15).close()
