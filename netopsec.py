@@ -56,4 +56,4 @@ for report in toReport:
         headers={"Content-Type": "application/json","Authorization": f"Bearer {token}"},method="POST",)
         urllib.request.urlopen(req, timeout=15).close()
     except (ValueError, urllib.error.URLError) as e:
-        print(f"Failed to report {line!r}: {e}")
+        print(f"Failed to report {report!r}: {e}")
