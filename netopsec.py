@@ -29,6 +29,6 @@ with open(src) as f:
             req = urllib.request.Request(endpoint,data=json.dumps(line).encode(),
             headers={"Content-Type": "application/json","Authorization": f"Bearer {token}"},method="POST",)
             urllib.request.urlopen(req, timeout=15).close()
-            alreadySend.append(line['ip_src'])
+            alreadySend.append(subnet)
         except (ValueError, urllib.error.URLError) as e:
             print(f"Failed to report {line!r}: {e}")
