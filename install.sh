@@ -10,7 +10,7 @@ iface=$(ip route get 1.1.1.1 | awk '{for(i=1;i<=NF;i++) if($i=="dev") {print $(i
 sed -i "s/changeInterfaceHere/$iface/g" pmacctd.conf 
 cd /usr/local/bin/
 wget -O /usr/local/bin/netopsec.py https://raw.githubusercontent.com/Ne00n/netopsec-reporter/refs/heads/master/netopsec.py
-echo "76f0ed658facb65ddf19346b59a93cbafddb2de3531e5c8ab3c9eada73d752b8  netopsec.py" | sha256sum -c --status - || { echo "Checksum mismatch, aborting." >&2; exit 1; }
+echo "106920a9f76c42ecf4ebbd75c733e60f37f4fe712d98bb3cdb49edf031f77ce2  netopsec.py" | sha256sum -c --status - || { echo "Checksum mismatch, aborting." >&2; exit 1; }
 sed -i "s/changeTokenHere/$1/g" netopsec.py 
 chmod +x netopsec.py
 systemctl restart pmacctd

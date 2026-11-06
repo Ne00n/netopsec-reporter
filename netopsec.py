@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import json, os, urllib.request, subprocess, urllib.error
+import ipaddress, json, os, urllib.request, subprocess, urllib.error
 
 src = "/var/lib/pmacct/ports.json"
 endpoint = "https://report.opsec.wang"
@@ -20,7 +20,10 @@ with open(src) as f:
         if not line: continue
         try:
             line = json.loads(line)
-            if line['ip_src'] in alreadySend: continue
+            ip = ipaddress.ip_address(line['ip_src'])
+            prefix = 24 if ip.version == 4 else 48
+            subnet = ipaddress.ip_network(f"{ip}/{prefix}", strict=False)
+            if str(subnet) in alreadySend: continue
             if line['port_dst'] in usedPorts: continue
             if not line['port_dst'] in monitorPorts: continue
             req = urllib.request.Request(endpoint,data=json.dumps(line).encode(),
