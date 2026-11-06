@@ -20,12 +20,12 @@ with open(src) as f:
         if not line: continue
         try:
             line = json.loads(line)
+            if line['port_dst'] in usedPorts: continue
+            if not line['port_dst'] in monitorPorts: continue
             ip = ipaddress.ip_address(line['ip_src'])
             prefix = 24 if ip.version == 4 else 48
             subnet = ipaddress.ip_network(f"{ip}/{prefix}", strict=False)
             if str(subnet) in alreadySend: continue
-            if line['port_dst'] in usedPorts: continue
-            if not line['port_dst'] in monitorPorts: continue
             req = urllib.request.Request(endpoint,data=json.dumps(line).encode(),
             headers={"Content-Type": "application/json","Authorization": f"Bearer {token}"},method="POST",)
             urllib.request.urlopen(req, timeout=15).close()
