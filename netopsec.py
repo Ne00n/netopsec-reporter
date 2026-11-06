@@ -23,34 +23,37 @@ for line in out.splitlines():
     proto, local = f[0], f[4]
     usedPorts.append(int(local.rsplit(":", 1)[1]))
 
-alreadySend, whitelist = [], []
+alreadyReported, whitelist, toReport = [], [], []
 with open(src) as f:
     for line in f:
         line = line.strip()
         if not line: continue
-        try:
-            line = json.loads(line)
-            #when we talk to someone aka we are the source, we whitelist the destination ip address, to avoid false bans
-            if line['ip_src'] in source:
-                whitelist.append(line['ip_dst'])
-                continue
-            #if a service is using the port we wanna monitor, ignore it
-            if line['port_dst'] in usedPorts: continue
-            #if the port isn't in monitoredPorts, ignore it
-            if not line['port_dst'] in monitorPorts: continue
-            #if we talked to the ip/source before, skip it
-            if line['ip_src'] in whitelist: continue
-            #filter by source/subnet to avoid getting rate limited
-            print(line)
-            ip = ipaddress.ip_address(line['ip_src'])
-            prefix = 24 if ip.version == 4 else 48
-            subnet = ipaddress.ip_network(f"{ip}/{prefix}", strict=False)
-            #if we already reported anything in this subnet, ignore it
-            if str(subnet) in alreadySend: continue
-            #report
-            req = urllib.request.Request(endpoint,data=json.dumps(line).encode(),
-            headers={"Content-Type": "application/json","Authorization": f"Bearer {token}"},method="POST",)
-            urllib.request.urlopen(req, timeout=15).close()
-            alreadySend.append(subnet)
-        except (ValueError, urllib.error.URLError) as e:
-            print(f"Failed to report {line!r}: {e}")
+        line = json.loads(line)
+        #when we talk to someone aka we are the source, we whitelist the destination ip address, to avoid false bans
+        if line['ip_src'] in source:
+            whitelist.append(line['ip_dst'])
+            continue
+        #if a service is using the port we wanna monitor, ignore it
+        if line['port_dst'] in usedPorts: continue
+        #if the port isn't in monitoredPorts, ignore it
+        if not line['port_dst'] in monitorPorts: continue
+        #filter by source/subnet to avoid getting rate limited
+        ip = ipaddress.ip_address(line['ip_src'])
+        prefix = 24 if ip.version == 4 else 48
+        subnet = ipaddress.ip_network(f"{ip}/{prefix}", strict=False)
+        #if we already reported anything in this subnet, ignore it
+        if str(subnet) in alreadyReported: continue
+        #report
+        toReport.append(line)
+        alreadyReported.append(subnet)
+
+for report in toReport:
+    try:
+        #if we talked to the ip/source before, skip it
+        if report['ip_src'] in whitelist: continue
+        print(report)
+        req = urllib.request.Request(endpoint,data=json.dumps(report).encode(),
+        headers={"Content-Type": "application/json","Authorization": f"Bearer {token}"},method="POST",)
+        urllib.request.urlopen(req, timeout=15).close()
+    except (ValueError, urllib.error.URLError) as e:
+        print(f"Failed to report {line!r}: {e}")
