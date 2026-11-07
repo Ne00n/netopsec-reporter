@@ -5,7 +5,7 @@ apt-get install pmacct -y
 cd /etc/pmacct/
 mv pmacctd.conf pmacctd.conf.bak
 wget -O /etc/pmacct/pmacctd.conf https://raw.githubusercontent.com/Ne00n/netopsec-reporter/refs/heads/master/pmacctd.conf 
-echo "7fd58d25fdbff07fd194142c64084fc8293ea47155513e69def071ff3ebe387f  pmacctd.conf" | sha256sum -c --status - || { echo "Checksum mismatch, aborting." >&2; exit 1; }
+echo "46b67fbb0602acdd6e0515f5a4b0ee45903462e370b00633f0e67cdfbdfd5a78  pmacctd.conf" | sha256sum -c --status - || { echo "Checksum mismatch, aborting." >&2; exit 1; }
 iface=$(ip route get 1.1.1.1 | awk '{for(i=1;i<=NF;i++) if($i=="dev") {print $(i+1); exit}}')
 sed -i "s/changeInterfaceHere/$iface/g" pmacctd.conf 
 cd /usr/local/bin/
