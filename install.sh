@@ -13,5 +13,13 @@ wget -O /usr/local/bin/netopsec.py https://raw.githubusercontent.com/Ne00n/netop
 echo "6dbe71a022d5862522623c6a13aa482383d2040590943ab95f5cd156d23957fc  netopsec.py" | sha256sum -c --status - || { echo "Checksum mismatch, aborting." >&2; exit 1; }
 sed -i "s/changeTokenHere/$1/g" netopsec.py 
 chmod +x netopsec.py
-systemctl restart pmacctd
+#drop permissions for pmacctd
+getent group pmacct >/dev/null || groupadd -r pmacct
+id pmacct >/dev/null 2>&1 || useradd -r -g pmacct -M -d /var/lib/pmacct -s /usr/sbin/nologin pmacct
+chown -R pmacct:pmacct /var/lib/pmacct/
+wget -O /etc/systemd/system/pmacctd.service https://raw.githubusercontent.com/Ne00n/netopsec-reporter/refs/heads/master/pmacctd.service
+echo "1b2ccf400228701763246f31a0d1130bd0d73d244b52065b2bb94ce46fa0c35d  /etc/systemd/system/pmacctd.service" | sha256sum -c --status - || { echo "Checksum mismatch, aborting." >&2; exit 1; }
+systemctl stop pmacctd
+systemctl daemon-reload
+systemctl start pmacctd
 cd
