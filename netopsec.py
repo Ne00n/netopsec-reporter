@@ -51,6 +51,7 @@ for report in toReport:
     try:
         #if we talked to the ip/source before, skip it
         if report['ip_src'] in whitelist: continue
+        report['sourceType'] = 1
         print(report)
         req = urllib.request.Request(endpoint,data=json.dumps(report).encode(),
         headers={"Content-Type": "application/json","Authorization": f"Bearer {token}"},method="POST",)
